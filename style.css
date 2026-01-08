@@ -1,0 +1,905 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Lato', 'Arial', sans-serif;
+    background: linear-gradient(135deg, #f5f3ee 0%, #ede8dd 100%);
+    color: #333333;
+    line-height: 1.7;
+    min-height: 100vh;
+}
+
+header {
+    background: linear-gradient(135deg, #3d2817 0%, #5c3d2e 100%);
+    color: #f4f1ea;
+    padding: 2rem 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+header .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+header h1 {
+    font-family: 'Merriweather', Georgia, serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.selector-section {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 0 20px;
+}
+
+.selector-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.selector-card label {
+    display: block;
+    font-weight: 600;
+    color: #3d2817;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.selector-card select {
+    width: 100%;
+    padding: 0.9rem;
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Lato', sans-serif;
+}
+
+.selector-card select:hover {
+    border-color: #b87a4b;
+}
+
+.selector-card select:focus {
+    outline: none;
+    border-color: #8b5a3c;
+    box-shadow: 0 0 0 3px rgba(139,90,60,0.1);
+}
+
+.main-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px 3rem;
+}
+
+.loading, .empty-state {
+    text-align: center;
+    padding: 3rem;
+    font-style: italic;
+    color: #666;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.book-detail-container {
+    display: grid;
+    grid-template-columns: 320px 1fr 280px;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+.book-info-section {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    height: fit-content;
+    position: sticky;
+    top: 20px;
+}
+
+.book-cover-placeholder {
+    width: 100%;
+    height: 340px;
+    background: linear-gradient(135deg, #d4c5b0 0%, #e8dcc8 100%);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+    border: 1px solid #c9b89a;
+}
+
+.book-cover-placeholder svg {
+    width: 80px;
+    height: 80px;
+    opacity: 0.3;
+}
+
+.book-title {
+    font-family: 'Merriweather', Georgia, serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #3d2817;
+    margin-bottom: 0.75rem;
+    line-height: 1.3;
+}
+
+.book-author {
+    font-size: 1.1rem;
+    color: #b87a4b;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+
+.bookshelf-section {
+    margin-bottom: 1.5rem;
+}
+
+.bookshelf-dropdown {
+    width: 100%;
+    padding: 0.9rem;
+    font-size: 1rem;
+    border: 2px solid #b87a4b;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #b87a4b 0%, #8b5a3c 100%);
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(139,90,60,0.3);
+}
+
+.bookshelf-dropdown:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(139,90,60,0.4);
+}
+
+.bookshelf-dropdown:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(184,122,75,0.3);
+}
+
+.bookshelf-dropdown option {
+    background: white;
+    color: #333;
+}
+
+.book-meta {
+    border-top: 2px solid #f0ebe2;
+    padding-top: 1.5rem;
+}
+
+.book-meta-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f5f3ee;
+}
+
+.book-meta-label {
+    font-weight: 600;
+    color: #666;
+}
+
+.book-meta-value {
+    color: #333;
+    font-weight: 500;
+}
+
+.book-synopsis {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid #f0ebe2;
+}
+
+.book-synopsis h3 {
+    font-family: 'Merriweather', Georgia, serif;
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+    color: #3d2817;
+}
+
+.book-synopsis p {
+    color: #555;
+    line-height: 1.7;
+}
+
+.reviews-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.review-stats {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.review-stats h2 {
+    font-family: 'Merriweather', Georgia, serif;
+    font-size: 1.8rem;
+    color: #3d2817;
+    margin-bottom: 1.5rem;
+}
+
+.rating-overview {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.average-rating-box {
+    text-align: center;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #fef9f3 0%, #fef5eb 100%);
+    border-radius: 12px;
+    border: 2px solid #f9a825;
+}
+
+.rating-number {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #d97c38;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.rating-stars {
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+}
+
+.star-filled {
+    color: #f9a825;
+}
+
+.star-empty {
+    color: #ddd;
+}
+
+.total-reviews {
+    color: #999;
+    font-size: 0.95rem;
+}
+
+.rating-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.rating-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.rating-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #666;
+    width: 60px;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.rating-bar-container {
+    flex: 1;
+    height: 24px;
+    background: #f0ebe2;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+}
+
+.rating-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #f9a825 0%, #d97c38 100%);
+    transition: width 0.6s ease;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 8px;
+    color: white;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.rating-count {
+    font-size: 0.9rem;
+    color: #666;
+    width: 50px;
+    text-align: right;
+}
+
+.review-controls {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.review-controls h3 {
+    font-family: 'Merriweather', Georgia, serif;
+    font-size: 1.3rem;
+    color: #3d2817;
+    margin: 0;
+}
+
+.sort-dropdown {
+    padding: 0.7rem 1rem;
+    font-size: 0.95rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Lato', sans-serif;
+}
+
+.sort-dropdown:hover {
+    border-color: #b87a4b;
+}
+
+.sort-dropdown:focus {
+    outline: none;
+    border-color: #8b5a3c;
+    box-shadow: 0 0 0 3px rgba(139,90,60,0.1);
+}
+
+.write-review-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.write-review-section h3 {
+    font-family: 'Merriweather', Georgia, serif;
+    font-size: 1.5rem;
+    color: #3d2817;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-family: 'Lato', sans-serif;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #b87a4b;
+    box-shadow: 0 0 0 3px rgba(184,122,75,0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.star-rating-input {
+    display: flex;
+    gap: 0.5rem;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    font-size: 2rem;
+}
+
+.star-rating-input input {
+    display: none;
+}
+
+.star-rating-input label {
+    cursor: pointer;
+    color: #ddd;
+    transition: all 0.2s ease;
+}
+
+.star-rating-input label:hover,
+.star-rating-input label:hover ~ label,
+.star-rating-input input:checked ~ label {
+    color: #f9a825;
+}
+
+.submit-btn {
+    background: linear-gradient(135deg, #b87a4b 0%, #8b5a3c 100%);
+    color: white;
+    padding: 1rem 2.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(139,90,60,0.3);
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(139,90,60,0.4);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+.submit-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.reviews-list {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.review-card {
+    background: #fafaf8;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border: 2px solid #f0ebe2;
+    transition: all 0.3s ease;
+}
+
+.review-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-color: #d97c38;
+}
+
+.review-header {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.reviewer-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid #d97c38;
+    flex-shrink: 0;
+}
+
+.reviewer-info {
+    flex: 1;
+}
+
+.reviewer-name-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.reviewer-name {
+    font-weight: 700;
+    color: #3d2817;
+    font-size: 1.1rem;
+}
+
+.verified-badge {
+    background: #28a745;
+    color: white;
+    padding: 0.15rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.review-rating {
+    font-size: 1.1rem;
+}
+
+.spoiler-overlay {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffe8a1 100%);
+    border: 2px solid #ffc107;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+    margin: 1rem 0;
+}
+
+.spoiler-warning {
+    color: #856404;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    font-size: 1.05rem;
+}
+
+.show-spoiler-btn {
+    background: #ffc107;
+    color: #856404;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.show-spoiler-btn:hover {
+    background: #e0a800;
+    transform: translateY(-1px);
+}
+
+.review-comment {
+    color: #333;
+    line-height: 1.8;
+    margin-bottom: 1rem;
+    font-size: 1.05rem;
+}
+
+.review-comment.hidden {
+    display: none;
+}
+
+.quote-text {
+    font-family: 'Merriweather', Georgia, serif;
+    font-style: italic;
+    background: #f8f6f1;
+    padding: 1rem 1.5rem;
+    border-left: 4px solid #b87a4b;
+    margin: 1rem 0;
+    border-radius: 4px;
+    color: #555;
+}
+
+.review-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f0ebe2;
+}
+
+.review-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tag {
+    background: #e8dcc8;
+    color: #5c3d2e;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.helpful-btn {
+    background: white;
+    border: 2px solid #ddd;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.helpful-btn:hover {
+    border-color: #28a745;
+    color: #28a745;
+    background: #f0fff4;
+}
+
+.helpful-btn.active {
+    border-color: #28a745;
+    background: #28a745;
+    color: white;
+}
+
+.no-reviews {
+    text-align: center;
+    padding: 2rem;
+    color: #999;
+    font-style: italic;
+}
+
+.sidebar-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.related-books-widget {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 20px;
+}
+
+.related-books-widget h3 {
+    font-family: 'Merriweather', Georgia, serif;
+    font-size: 1.3rem;
+    color: #3d2817;
+    margin-bottom: 1.5rem;
+}
+
+.related-book-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.related-book-item:hover {
+    background: #fafaf8;
+    border-color: #d97c38;
+    transform: translateX(4px);
+}
+
+.related-book-cover {
+    width: 60px;
+    height: 85px;
+    background: linear-gradient(135deg, #d4c5b0 0%, #e8dcc8 100%);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid #c9b89a;
+}
+
+.related-book-cover svg {
+    width: 25px;
+    height: 25px;
+    opacity: 0.3;
+}
+
+.related-book-info {
+    flex: 1;
+}
+
+.related-book-title {
+    font-weight: 700;
+    color: #3d2817;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+    line-height: 1.3;
+}
+
+.related-book-author {
+    color: #b87a4b;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+}
+
+.related-book-rating {
+    font-size: 0.85rem;
+    color: #f9a825;
+}
+
+.message {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.message-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.message-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9998;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-overlay.active {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-container {
+    background: white;
+    border-radius: 16px;
+    max-width: 700px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: slideUp 0.3s ease;
+    position: relative;
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #3d2817 0%, #5c3d2e 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+    border-radius: 16px 16px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    font-family: 'Merriweather', Georgia, serif;
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.modal-close {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    font-size: 1.8rem;
+    cursor: pointer;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    line-height: 1;
+}
+
+.modal-close:hover {
+    background: rgba(255,255,255,0.3);
+    transform: rotate(90deg);
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 1200px) {
+    .book-detail-container {
+        grid-template-columns: 300px 1fr;
+        gap: 1.5rem;
+    }
+
+    .sidebar-section {
+        display: none;
+    }
+}
+
+@media (max-width: 968px) {
+    .book-detail-container {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .book-info-section {
+        position: static;
+    }
+
+    .rating-overview {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    header h1 {
+        font-size: 2rem;
+    }
+
+    .book-title {
+        font-size: 1.6rem;
+    }
+}
+
+@media (max-width: 640px) {
+    header h1 {
+        font-size: 1.6rem;
+    }
+
+    .book-cover-placeholder {
+        height: 280px;
+    }
+
+    .rating-number {
+        font-size: 2.5rem;
+    }
+
+    .modal-container {
+        width: 95%;
+        max-height: 90vh;
+    }
+
+    .review-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .sort-dropdown {
+        width: 100%;
+    }
+}
