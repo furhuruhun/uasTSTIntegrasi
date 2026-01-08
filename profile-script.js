@@ -1,5 +1,5 @@
-const AUTH_BASE_URL = "http://localhost:8004/auth";
-const PROFILE_BASE_URL = "http://localhost:8004/user";
+const AUTH_BASE_URL = "/auth";
+const PROFILE_BASE_URL = "/user";
 
 let currentUser = null;
 let authMode = 'login';

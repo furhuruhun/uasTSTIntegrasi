@@ -1,9 +1,9 @@
 const API_KEY = "uas-sukses-tst";
 const BASE_CATALOG_URL = "https://darryl.tugastst.my.id/books";
 const BASE_REVIEW_URL = "https://farhan.tugastst.my.id/reviews/book";
-const POST_REVIEW_URL = "http://localhost:8004/pustakawarga/review";
-const AUTH_BASE_URL = "http://localhost:8004/auth";
-const SHELF_BASE_URL = "http://localhost:8004/user/shelf";
+const POST_REVIEW_URL = "/pustakawarga/review";
+const AUTH_BASE_URL = "/auth";
+const SHELF_BASE_URL = "/user/shelf";
 
 let currentBookId = null;
 let currentReviews = [];
