@@ -1,0 +1,96 @@
+.btn-auth {
+    padding: 10px 24px;
+    border: 2px solid #377458;
+    background: transparent;
+    color: #377458;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Lato', sans-serif;
+}
+
+.btn-auth:hover {
+    background: #377458;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(55, 116, 88, 0.3);
+}
+
+.btn-register {
+    background: #377458;
+    color: white;
+}
+
+.btn-register:hover {
+    background: #2a5a44;
+    border-color: #2a5a44;
+}
+
+.btn-logout {
+    background: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+.btn-logout:hover {
+    background: #c82333;
+    border-color: #c82333;
+}
+
+#authModal .modal-container {
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#authModal input[type="text"],
+#authModal input[type="password"],
+#authModal input[type="email"] {
+    font-family: 'Lato', sans-serif;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#authModal input[type="text"]:focus,
+#authModal input[type="password"]:focus,
+#authModal input[type="email"]:focus {
+    outline: none;
+    border-color: #377458;
+    box-shadow: 0 0 0 3px rgba(55, 116, 88, 0.1);
+}
+
+#userInfo {
+    background: #f8f9fa;
+    padding: 8px 16px;
+    border-radius: 12px;
+    border: 2px solid #e0e0e0;
+}
+
+@media (max-width: 768px) {
+    header .container > div {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+    
+    #authButtons {
+        margin-top: 15px;
+        width: 100%;
+        justify-content: flex-start !important;
+    }
+    
+    .btn-auth {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+}
+

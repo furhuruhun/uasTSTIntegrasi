@@ -8,12 +8,28 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="auth-styles.css">
 </head>
 <body>
     <header>
         <div class="container">
-            <h1>📚 PustakaWarga</h1>
-            <p>Platform review buku modern - Temukan, baca, dan bagikan ulasan</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>📚 PustakaWarga</h1>
+                    <p>Platform review buku modern - Temukan, baca, dan bagikan ulasan</p>
+                </div>
+                <div id="authButtons" style="display: flex; gap: 10px; align-items: center;">
+                    <button id="loginBtn" class="btn-auth" onclick="showAuthModal('login')" style="display: none;">Masuk</button>
+                    <button id="registerBtn" class="btn-auth btn-register" onclick="showAuthModal('register')" style="display: none;">Daftar</button>
+                    <div id="userInfo" style="display: none; align-items: center; gap: 10px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px;" id="userAvatar"></div>
+                            <span style="font-weight: 600; color: #2D2D2D; cursor: pointer;" id="username" onclick="window.location.href='profile.html'" title="Lihat Profil"></span>
+                        </div>
+                        <button id="logoutBtn" class="btn-auth btn-logout" onclick="logout()">Keluar</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -41,6 +57,48 @@
                 <button class="modal-close" onclick="closeModal()">&times;</button>
             </div>
             <div class="modal-body" id="modalContent">
+            </div>
+        </div>
+    </div>
+
+    <div id="authModal" class="modal-overlay" onclick="closeAuthModal(event)" style="display: none;">
+        <div class="modal-container" onclick="event.stopPropagation()" style="max-width: 450px;">
+            <div class="modal-header">
+                <h3 id="authModalTitle">🔐 Masuk</h3>
+                <button class="modal-close" onclick="closeAuthModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="authForm" onsubmit="handleAuthSubmit(event)">
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2D2D2D;">Username</label>
+                        <input type="text" id="authUsername" required 
+                               style="width: 100%; padding: 12px; border: 1px solid #E0DDD8; border-radius: 8px; font-size: 14px;"
+                               placeholder="Masukkan username">
+                        <small style="color: #595959; font-size: 12px;">Minimal 3 karakter</small>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2D2D2D;">Password</label>
+                        <input type="password" id="authPassword" required 
+                               style="width: 100%; padding: 12px; border: 1px solid #E0DDD8; border-radius: 8px; font-size: 14px;"
+                               placeholder="Masukkan password">
+                        <small style="color: #595959; font-size: 12px;">Minimal 6 karakter</small>
+                    </div>
+                    <div id="emailField" style="margin-bottom: 20px; display: none;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2D2D2D;">Email (Opsional)</label>
+                        <input type="email" id="authEmail" 
+                               style="width: 100%; padding: 12px; border: 1px solid #E0DDD8; border-radius: 8px; font-size: 14px;"
+                               placeholder="Masukkan email">
+                    </div>
+                    <div id="authError" style="display: none; padding: 12px; background: #fee; border: 1px solid #fcc; border-radius: 8px; color: #c33; margin-bottom: 15px; font-size: 14px;"></div>
+                    <div id="authSuccess" style="display: none; padding: 12px; background: #efe; border: 1px solid #cfc; border-radius: 8px; color: #3c3; margin-bottom: 15px; font-size: 14px;"></div>
+                    <button type="submit" id="authSubmitBtn" class="btn-auth btn-register" style="width: 100%; padding: 14px; font-size: 16px; font-weight: 600;">
+                        Masuk
+                    </button>
+                    <div style="text-align: center; margin-top: 15px; color: #595959;">
+                        <span id="authToggleText">Belum punya akun?</span>
+                        <a href="#" id="authToggleLink" onclick="toggleAuthMode(event)" style="color: #377458; font-weight: 600; text-decoration: none;">Daftar</a>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

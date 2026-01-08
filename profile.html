@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Saya - PustakaWarga</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="auth-styles.css">
+    <style>
+        .profile-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        .profile-header {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid #377458;
+            box-shadow: 0 4px 12px rgba(55, 116, 88, 0.3);
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-info h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 2rem;
+            color: #2D2D2D;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-meta {
+            color: #595959;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: #F9F7F4;
+            border-radius: 12px;
+            min-width: 120px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #377458;
+            font-family: 'Merriweather', serif;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #595959;
+            margin-top: 0.25rem;
+        }
+
+        .section-title {
+            font-family: 'Merriweather', serif;
+            font-size: 1.75rem;
+            color: #2D2D2D;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .book-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .book-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .book-cover {
+            width: 100%;
+            aspect-ratio: 2/3;
+            background: linear-gradient(135deg, #8b7355 0%, #5c3d2e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .book-info {
+            padding: 1rem;
+        }
+
+        .book-title {
+            font-family: 'Merriweather', serif;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #2D2D2D;
+            margin-bottom: 0.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .book-author {
+            font-size: 0.85rem;
+            color: #595959;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.5rem;
+            color: #2D2D2D;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: #595959;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            padding: 0.75rem 2rem;
+            background: #377458;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: #2a5844;
+        }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #377458;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+                padding: 1.5rem;
+            }
+
+            .profile-stats {
+                flex-direction: column;
+                gap: 1rem;
+                width: 100%;
+            }
+
+            .stat-item {
+                width: 100%;
+            }
+
+            .books-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>📚 PustakaWarga</h1>
+                    <p>Platform review buku modern - Temukan, baca, dan bagikan ulasan</p>
+                </div>
+                <div id="authButtons" style="display: flex; gap: 10px; align-items: center;">
+                    <button id="loginBtn" class="btn-auth" onclick="window.location.href='index.html'" style="display: none;">Kembali</button>
+                    <button id="registerBtn" class="btn-auth btn-register" onclick="showAuthModal('register')" style="display: none;">Daftar</button>
+                    <div id="userInfo" style="display: none; align-items: center; gap: 10px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px;" id="userAvatar"></div>
+                            <span style="font-weight: 600; color: #f4f1ea;" id="username"></span>
+                        </div>
+                        <button id="logoutBtn" class="btn-auth btn-logout" onclick="logout()">Keluar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="profile-container">
+        <div id="loadingState" class="loading-spinner">
+            <div class="spinner"></div>
+            <p style="margin-top: 1rem; color: #595959;">Memuat profil...</p>
+        </div>
+
+        <div id="profileContent" style="display: none;">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <img id="profileAvatar" src="" alt="Avatar">
+                </div>
+                <div class="profile-info">
+                    <h1 id="profileUsername"></h1>
+                    <p class="profile-meta">
+                        <span>Bergabung sejak <strong id="joinDate"></strong></span>
+                    </p>
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <div class="stat-number" id="statTotalRead">0</div>
+                            <div class="stat-label">Buku Dibaca</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="statTotalReviews">0</div>
+                            <div class="stat-label">Ulasan Ditulis</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="statCurrentlyReading">0</div>
+                            <div class="stat-label">Sedang Dibaca</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h2 class="section-title">
+                    <span>📚</span>
+                    <span>Buku yang Sudah Dibaca</span>
+                </h2>
+                <div id="readBooksContainer"></div>
+            </div>
+        </div>
+
+        <div id="errorState" style="display: none;">
+            <div class="empty-state">
+                <div class="empty-state-icon">⚠️</div>
+                <h3>Gagal Memuat Profil</h3>
+                <p>Silakan login terlebih dahulu atau coba lagi nanti.</p>
+                <a href="index.html" class="btn-primary">Kembali ke Beranda</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="authModal" class="modal-overlay" onclick="closeAuthModal(event)" style="display: none;">
+        <div class="modal-container" onclick="event.stopPropagation()" style="max-width: 450px;">
+            <div class="modal-header">
+                <h3 id="authModalTitle">🔐 Masuk</h3>
+                <button class="modal-close" onclick="closeAuthModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="authForm" onsubmit="handleAuthSubmit(event)">
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2D2D2D;">Username</label>
+                        <input type="text" id="authUsername" required 
+                               style="width: 100%; padding: 12px; border: 1px solid #E0DDD8; border-radius: 8px; font-size: 14px;"
+                               placeholder="Masukkan username">
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2D2D2D;">Password</label>
+                        <input type="password" id="authPassword" required 
+                               style="width: 100%; padding: 12px; border: 1px solid #E0DDD8; border-radius: 8px; font-size: 14px;"
+                               placeholder="Masukkan password">
+                    </div>
+                    <div id="emailField" style="margin-bottom: 20px; display: none;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2D2D2D;">Email (Opsional)</label>
+                        <input type="email" id="authEmail" 
+                               style="width: 100%; padding: 12px; border: 1px solid #E0DDD8; border-radius: 8px; font-size: 14px;"
+                               placeholder="Masukkan email">
+                    </div>
+                    <div id="authError" style="display: none; padding: 12px; background: #fee; border: 1px solid #fcc; border-radius: 8px; color: #c33; margin-bottom: 15px; font-size: 14px;"></div>
+                    <button type="submit" id="authSubmitBtn" class="btn-auth btn-register" style="width: 100%; padding: 14px; font-size: 16px; font-weight: 600;">
+                        Masuk
+                    </button>
+                    <div style="text-align: center; margin-top: 15px; color: #595959;">
+                        <span id="authToggleText">Belum punya akun?</span>
+                        <a href="#" id="authToggleLink" onclick="toggleAuthMode(event)" style="color: #377458; font-weight: 600; text-decoration: none;">Daftar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="profile-script.js"></script>
+</body>
+</html>
+
+

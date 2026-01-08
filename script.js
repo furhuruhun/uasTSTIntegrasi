@@ -1,13 +1,173 @@
 const API_KEY = "uas-sukses-tst";
 const BASE_CATALOG_URL = "https://darryl.tugastst.my.id/books";
 const BASE_REVIEW_URL = "https://farhan.tugastst.my.id/reviews/book";
-const POST_REVIEW_URL = "https://farhan.tugastst.my.id/reviews";
+const POST_REVIEW_URL = "http://localhost:8004/pustakawarga/review";
+const AUTH_BASE_URL = "http://localhost:8004/auth";
+const SHELF_BASE_URL = "http://localhost:8004/user/shelf";
 
 let currentBookId = null;
 let currentReviews = [];
 let allBooks = [];
 let currentBookshelfStatus = 'want-to-read';
 let helpfulCounts = {};
+let currentUser = null;
+let authMode = 'login';
+
+function initAuth() {
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+    
+    if (token && userData) {
+        try {
+            currentUser = JSON.parse(userData);
+            updateAuthUI();
+        } catch (error) {
+            console.error('Error parsing user data:', error);
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+        }
+    } else {
+        updateAuthUI();
+    }
+}
+
+function updateAuthUI() {
+    const loginBtn = document.getElementById('loginBtn');
+    const registerBtn = document.getElementById('registerBtn');
+    const userInfo = document.getElementById('userInfo');
+    const username = document.getElementById('username');
+    const userAvatar = document.getElementById('userAvatar');
+
+    if (currentUser) {
+        loginBtn.style.display = 'none';
+        registerBtn.style.display = 'none';
+        userInfo.style.display = 'flex';
+        username.textContent = currentUser.username;
+        userAvatar.textContent = currentUser.username.charAt(0).toUpperCase();
+        
+        username.style.cursor = 'pointer';
+        username.onclick = () => window.location.href = 'profile.html';
+        username.title = 'Lihat Profil';
+    } else {
+        loginBtn.style.display = 'block';
+        registerBtn.style.display = 'block';
+        userInfo.style.display = 'none';
+    }
+}
+
+function showAuthModal(mode) {
+    authMode = mode;
+    const modal = document.getElementById('authModal');
+    const title = document.getElementById('authModalTitle');
+    const submitBtn = document.getElementById('authSubmitBtn');
+    const toggleText = document.getElementById('authToggleText');
+    const toggleLink = document.getElementById('authToggleLink');
+    const emailField = document.getElementById('emailField');
+    
+    modal.style.display = 'flex';
+    document.getElementById('authForm').reset();
+    document.getElementById('authError').style.display = 'none';
+    document.getElementById('authSuccess').style.display = 'none';
+    
+    if (mode === 'login') {
+        title.textContent = '🔐 Masuk';
+        submitBtn.textContent = 'Masuk';
+        toggleText.textContent = 'Belum punya akun?';
+        toggleLink.textContent = 'Daftar';
+        emailField.style.display = 'none';
+    } else {
+        title.textContent = '📝 Daftar Akun';
+        submitBtn.textContent = 'Daftar';
+        toggleText.textContent = 'Sudah punya akun?';
+        toggleLink.textContent = 'Masuk';
+        emailField.style.display = 'block';
+    }
+}
+
+function closeAuthModal(event) {
+    if (event && event.target.classList.contains('modal-container')) {
+        return;
+    }
+    document.getElementById('authModal').style.display = 'none';
+}
+
+function toggleAuthMode(event) {
+    event.preventDefault();
+    showAuthModal(authMode === 'login' ? 'register' : 'login');
+}
+
+async function handleAuthSubmit(event) {
+    event.preventDefault();
+    
+    const username = document.getElementById('authUsername').value.trim();
+    const password = document.getElementById('authPassword').value;
+    const email = document.getElementById('authEmail').value.trim();
+    const errorDiv = document.getElementById('authError');
+    const successDiv = document.getElementById('authSuccess');
+    const submitBtn = document.getElementById('authSubmitBtn');
+    
+    errorDiv.style.display = 'none';
+    successDiv.style.display = 'none';
+    
+    submitBtn.disabled = true;
+    submitBtn.textContent = authMode === 'login' ? 'Memproses...' : 'Mendaftar...';
+    
+    const endpoint = authMode === 'login' ? '/login' : '/register';
+    const payload = { username, password };
+    if (authMode === 'register') {
+        payload.email = email;
+    }
+    
+    try {
+        const response = await fetch(AUTH_BASE_URL + endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok && result.status === 'success') {
+            localStorage.setItem('token', result.data.token);
+            localStorage.setItem('user', JSON.stringify(result.data.user));
+            currentUser = result.data.user;
+            
+            successDiv.textContent = result.message;
+            successDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                closeAuthModal();
+                updateAuthUI();
+                if (currentBookId) {
+                    loadBookDetails(currentBookId);
+                }
+            }, 1000);
+        } else {
+            errorDiv.textContent = result.message || 'Terjadi kesalahan';
+            errorDiv.style.display = 'block';
+            submitBtn.disabled = false;
+            submitBtn.textContent = authMode === 'login' ? 'Masuk' : 'Daftar';
+        }
+    } catch (error) {
+        console.error('Auth error:', error);
+        errorDiv.textContent = 'Gagal terhubung ke server';
+        errorDiv.style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.textContent = authMode === 'login' ? 'Masuk' : 'Daftar';
+    }
+}
+
+function logout() {
+    if (confirm('Yakin ingin keluar?')) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        currentUser = null;
+        updateAuthUI();
+        if (currentBookId) {
+            loadBookDetails(currentBookId);
+        }
+    }
+}
 
 async function loadBookList() {
     try {
@@ -276,41 +436,48 @@ function renderBookDetails(book, reviewData) {
                 <div class="write-review-section">
                     <h3>✍️ Tulis Ulasan Anda</h3>
                     <div id="reviewMessage"></div>
-                    <form id="reviewForm" onsubmit="submitReview(event)">
-                        <div class="form-group">
-                            <label for="reviewerName">Nama Anda *</label>
-                            <input type="text" id="reviewerName" required placeholder="Masukkan nama Anda">
+                    ${currentUser ? `
+                        <div style="padding: 12px; background: #e8f5e9; border: 1px solid #81c784; border-radius: 8px; margin-bottom: 20px; color: #2e7d32;">
+                            <strong>Posting sebagai:</strong> ${currentUser.username}
                         </div>
-
-                        <div class="form-group">
-                            <label>Rating *</label>
-                            <div class="star-rating-input">
-                                <input type="radio" id="star5" name="rating" value="5" required>
-                                <label for="star5">★</label>
-                                <input type="radio" id="star4" name="rating" value="4">
-                                <label for="star4">★</label>
-                                <input type="radio" id="star3" name="rating" value="3">
-                                <label for="star3">★</label>
-                                <input type="radio" id="star2" name="rating" value="2">
-                                <label for="star2">★</label>
-                                <input type="radio" id="star1" name="rating" value="1">
-                                <label for="star1">★</label>
+                        <form id="reviewForm" onsubmit="submitReview(event)">
+                            <div class="form-group">
+                                <label>Rating *</label>
+                                <div class="star-rating-input">
+                                    <input type="radio" id="star5" name="rating" value="5" required>
+                                    <label for="star5">★</label>
+                                    <input type="radio" id="star4" name="rating" value="4">
+                                    <label for="star4">★</label>
+                                    <input type="radio" id="star3" name="rating" value="3">
+                                    <label for="star3">★</label>
+                                    <input type="radio" id="star2" name="rating" value="2">
+                                    <label for="star2">★</label>
+                                    <input type="radio" id="star1" name="rating" value="1">
+                                    <label for="star1">★</label>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-group">
-                            <label for="reviewComment">Komentar *</label>
-                            <textarea id="reviewComment" required placeholder="Bagikan pendapat Anda tentang buku ini..."></textarea>
-                        </div>
+                            <div class="form-group">
+                                <label for="reviewComment">Komentar *</label>
+                                <textarea id="reviewComment" required placeholder="Bagikan pendapat Anda tentang buku ini..."></textarea>
+                            </div>
 
-                        <div class="form-group">
-                            <label for="reviewTags">Tags (opsional)</label>
-                            <input type="text" id="reviewTags" placeholder="Pisahkan dengan koma, contoh: menarik, inspiratif">
-                            <small style="color: #999;">Tips: Gunakan koma untuk memisahkan tags</small>
-                        </div>
+                            <div class="form-group">
+                                <label for="reviewTags">Tags (opsional)</label>
+                                <input type="text" id="reviewTags" placeholder="Pisahkan dengan koma, contoh: menarik, inspiratif">
+                                <small style="color: #999;">Tips: Gunakan koma untuk memisahkan tags</small>
+                            </div>
 
-                        <button type="submit" class="submit-btn">Kirim Ulasan</button>
-                    </form>
+                            <button type="submit" class="submit-btn">Kirim Ulasan</button>
+                        </form>
+                    ` : `
+                        <div style="padding: 30px; text-align: center; background: #fff3e0; border: 2px dashed #ffb74d; border-radius: 12px;">
+                            <div style="font-size: 48px; margin-bottom: 15px;">🔒</div>
+                            <h4 style="margin-bottom: 10px; color: #2D2D2D;">Login untuk Menulis Ulasan</h4>
+                            <p style="color: #595959; margin-bottom: 20px;">Anda harus login terlebih dahulu untuk dapat memberikan ulasan pada buku ini.</p>
+                            <button onclick="showAuthModal('login')" class="submit-btn" style="background: #377458;">Masuk Sekarang</button>
+                        </div>
+                    `}
                 </div>
 
                 <div class="reviews-list">
@@ -346,6 +513,10 @@ function renderBookDetails(book, reviewData) {
 
     document.getElementById('content').innerHTML = html;
     document.getElementById('bookSelect').value = book.id;
+    
+    if (currentUser) {
+        loadBookshelfStatus(book.id);
+    }
 }
 
 function renderReviews(reviews) {
@@ -411,21 +582,114 @@ function applySort(sortBy) {
     document.getElementById('reviewsList').innerHTML = renderReviews(sorted);
 }
 
-function updateBookshelfStatus(status) {
+async function updateBookshelfStatus(status) {
+    if (!currentUser) {
+        alert('Silakan login terlebih dahulu untuk menyimpan status buku.');
+        return;
+    }
+
+    if (!currentBookId) {
+        console.error('No book ID');
+        return;
+    }
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('Token tidak ditemukan. Silakan login ulang.');
+        return;
+    }
+
     currentBookshelfStatus = status;
     const statusNames = {
         'want-to-read': 'Want to Read',
         'currently-reading': 'Currently Reading',
         'read': 'Read'
     };
-    console.log(`Status buku diubah menjadi: ${statusNames[status]}`);
+
+    try {
+        const response = await fetch(SHELF_BASE_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                book_id: parseInt(currentBookId),
+                status: status
+            })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.status === 'success') {
+            console.log(`Status buku diubah menjadi: ${statusNames[status]}`);
+            
+            const dropdown = document.getElementById('bookshelfStatus');
+            if (dropdown) {
+                dropdown.style.background = '#e8f5e9';
+                dropdown.style.borderColor = '#4caf50';
+                setTimeout(() => {
+                    dropdown.style.background = '';
+                    dropdown.style.borderColor = '';
+                }, 1000);
+            }
+        } else {
+            console.error('Failed to update shelf status:', result.message);
+            alert('Gagal menyimpan status buku. ' + (result.message || ''));
+        }
+    } catch (error) {
+        console.error('Error updating shelf status:', error);
+        alert('Terjadi kesalahan saat menyimpan status buku.');
+    }
+}
+
+async function loadBookshelfStatus(bookId) {
+    if (!currentUser) {
+        return;
+    }
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${SHELF_BASE_URL}/${bookId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.status === 'success' && result.data.status) {
+            const dropdown = document.getElementById('bookshelfStatus');
+            if (dropdown) {
+                dropdown.value = result.data.status;
+                currentBookshelfStatus = result.data.status;
+            }
+        }
+    } catch (error) {
+        console.error('Error loading shelf status:', error);
+    }
 }
 
 async function submitReview(event) {
     event.preventDefault();
 
+    if (!currentUser) {
+        showMessage('error', 'Anda harus login terlebih dahulu.');
+        return;
+    }
+
     if (!currentBookId) {
         showMessage('error', 'Error: Tidak ada buku yang dipilih.');
+        return;
+    }
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+        showMessage('error', 'Token tidak ditemukan. Silakan login ulang.');
         return;
     }
 
@@ -433,7 +697,6 @@ async function submitReview(event) {
     submitBtn.disabled = true;
     submitBtn.textContent = 'Mengirim...';
 
-    const reviewer = document.getElementById('reviewerName').value.trim();
     const rating = parseFloat(document.querySelector('input[name="rating"]:checked').value);
     const comment = document.getElementById('reviewComment').value.trim();
     const tagsInput = document.getElementById('reviewTags').value.trim();
@@ -441,10 +704,10 @@ async function submitReview(event) {
 
     const payload = {
         book_id: parseInt(currentBookId),
-        reviewer: reviewer,
         rating: rating,
         comment: comment,
-        contains_spoiler: false
+        contains_spoiler: false,
+        tags: tags
     };
 
     try {
@@ -452,7 +715,7 @@ async function submitReview(event) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'uas-api-key': API_KEY
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify(payload)
         });
@@ -466,13 +729,18 @@ async function submitReview(event) {
                 loadBookDetails(currentBookId);
             }, 1500);
         } else {
-            showMessage('error', `Gagal mengirim ulasan: ${result.message || 'Terjadi kesalahan'}`);
+            if (response.status === 401 || response.status === 403) {
+                showMessage('error', 'Sesi Anda telah berakhir. Silakan login ulang.');
+                logout();
+            } else {
+                showMessage('error', `Gagal mengirim ulasan: ${result.message || 'Terjadi kesalahan'}`);
+            }
             submitBtn.disabled = false;
             submitBtn.textContent = 'Kirim Ulasan';
         }
     } catch (error) {
         console.error("Error submitting review:", error);
-        showMessage('error', 'Gagal mengirim ulasan. Pastikan koneksi internet dan server aktif.');
+        showMessage('error', 'Gagal mengirim ulasan. Pastikan server integrasi (localhost:8004) aktif.');
         submitBtn.disabled = false;
         submitBtn.textContent = 'Kirim Ulasan';
     }
@@ -497,7 +765,9 @@ function closeModal(event) {
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         closeModal();
+        closeAuthModal();
     }
 });
 
+initAuth();
 loadBookList();
